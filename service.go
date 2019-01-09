@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	//PubsubClient pub sub cleint
+	//Client Cloud Firestore client
 	FirestoreClient *firestore.Client
 )
 
