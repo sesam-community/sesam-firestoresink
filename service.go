@@ -85,14 +85,24 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	for _, item := range bodyJsonArray {
-		docRef, _, error := FirestoreClient.Collection(collectionName).Add(ctx, item)
-		if error != nil{
-			log.Println(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		log.Printf("Created entity %v ", docRef.Path)
+	if len(bodyJsonArray) == 0 {
+		log.Println("Empty batch, nothing to process, return")
+		return
 	}
+	var batch = FirestoreClient.Batch()
+	var collection = FirestoreClient.Collection(collectionName)
+	for _, item := range bodyJsonArray {
+		m := item.(map[string]interface{})
+		var ref = collection.Doc(string(m["_id"].(string)))
+		delete(m, "_id")
+		batch.Set(ref, m)
+	}
+	results, err := batch.Commit(ctx)
+	if err != nil{
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	log.Printf("Batch of size %d processed successfully", len(results))
 
 }
