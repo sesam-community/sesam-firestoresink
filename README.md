@@ -30,13 +30,13 @@ Pipe setup
   "source": {
     "type": "embedded",
     "entities": [{
-      "_id": 1,
+      "_id": "1",
       "key": "value"
     }, {
-      "_id": 2,
+      "_id": "2",
       "key2": "value2"
     }, {
-      "_id": 3,
+      "_id": "3",
       "key3": "value3"
     }]
   },
