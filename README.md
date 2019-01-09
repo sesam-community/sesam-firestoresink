@@ -8,11 +8,12 @@ System setup
   "type": "system:microservice",
   "docker": {
     "environment": {
-      "GCP_PROJECT_ID": "sesam-228011",
+      "GCP_PROJECT_ID": "<GCP project id>",
       "GOOGLE_APPLICATION_CREDENTIALS": "credentials.json",
       "GOOGLE_APPLICATION_CREDENTIALS_CONTENT": {
         //GCP credentials as json or as string
-      }
+      },
+      "PORT": "<default port 8080 but can be overridden here>"
     },
     "image": "ohuenno/firestoresink",
     "port": 8080
