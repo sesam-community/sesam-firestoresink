@@ -101,12 +101,13 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 
 	for _, item := range bodyJsonArray {
 		m := item.(map[string]interface{})
-		if m["_deleted"].(bool) {
-			continue
-		}
 		var ref = collection.Doc(string(m["_id"].(string)))
 		delete(m, "_id")
-		batch.Set(ref, m)
+		if m["_deleted"] != nil && m["_deleted"].(bool) {
+			batch.Delete(ref)
+		} else {
+			batch.Set(ref, m)
+		}
 	}
 	//store new entities or update existing
 	results, err := batch.Commit(ctx)
