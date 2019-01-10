@@ -29,7 +29,11 @@ func main() {
 	log.Printf("Starting service on port %s", port)
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" {
-		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./credentials.json")
+		err = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./credentials.json")
+	}
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	credentialsFileContent := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_CONTENT")
@@ -79,26 +83,37 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var bodyJsonArray []interface{}
-	json.Unmarshal(body, &bodyJsonArray)
+
+	err = json.Unmarshal(body, &bodyJsonArray)
+
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	if len(bodyJsonArray) == 0 {
 		log.Println("Empty batch, nothing to process, return")
 		return
 	}
+	log.Printf("Got batch of %d entities", len(bodyJsonArray))
+
 	var batch = FirestoreClient.Batch()
 	var collection = FirestoreClient.Collection(collectionName)
+
 	for _, item := range bodyJsonArray {
 		m := item.(map[string]interface{})
+		if m["_deleted"].(bool) {
+			continue
+		}
 		var ref = collection.Doc(string(m["_id"].(string)))
 		delete(m, "_id")
 		batch.Set(ref, m)
 	}
+	//store new entities or update existing
 	results, err := batch.Commit(ctx)
-	if err != nil{
+
+	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

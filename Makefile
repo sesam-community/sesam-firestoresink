@@ -20,7 +20,7 @@ endif
 
 all: deps test build
 build:
-	${PREBUILD_FLAGS} $(GOBUILD) -o $(BINARY_NAME) # -v -ldflags="-s -w"
+	${PREBUILD_FLAGS} $(GOBUILD) -o $(BINARY_NAME)  -v -ldflags="-s -w"
 	$(BUILD_DOCKER)
 test:
 	$(GOTEST) -v ./...
