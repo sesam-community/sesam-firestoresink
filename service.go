@@ -77,8 +77,7 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		returnInternalErrorResponse(err, w)
 		return
 	}
 
@@ -87,8 +86,7 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &bodyJsonArray)
 
 	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		returnInternalErrorResponse(err, w)
 		return
 	}
 
@@ -114,10 +112,14 @@ func PublishMessage(w http.ResponseWriter, r *http.Request) {
 	results, err := batch.Commit(ctx)
 
 	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		returnInternalErrorResponse(err, w)
 		return
 	}
 	log.Printf("Batch of size %d processed successfully", len(results))
 
+}
+
+func returnInternalErrorResponse(err error, w http.ResponseWriter) {
+	log.Println(err)
+	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
