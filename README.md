@@ -8,11 +8,12 @@ System setup
   "type": "system:microservice",
   "docker": {
     "environment": {
-      "GCP_PROJECT_ID": "sesam-228011",
+      "GCP_PROJECT_ID": "<GCP project id>",
       "GOOGLE_APPLICATION_CREDENTIALS": "credentials.json",
       "GOOGLE_APPLICATION_CREDENTIALS_CONTENT": {
         //GCP credentials as json or as string
-      }
+      },
+      "PORT": "<default port 8080 but can be overridden here>"
     },
     "image": "ohuenno/firestoresink",
     "port": 8080
@@ -30,13 +31,13 @@ Pipe setup
   "source": {
     "type": "embedded",
     "entities": [{
-      "_id": 1,
+      "_id": "1",
       "key": "value"
     }, {
-      "_id": 2,
+      "_id": "2",
       "key2": "value2"
     }, {
-      "_id": 3,
+      "_id": "3",
       "key3": "value3"
     }]
   },
