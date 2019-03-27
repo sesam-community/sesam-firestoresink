@@ -1,4 +1,6 @@
 # sesam-firestoresink
+[![Build Status](https://api.travis-ci.org/sesam-community/sesam-firestoresink.svg?branch=master)](https://api.travis-ci.org/sesam-community/sesam-firestoresink)
+
 Sesam.io sink to GCP cloud firestore  
 * This sinsk use Sesam _id property as firestore document reference  
 * This sink will delete entity from firestore if entity has attribute _deleted which is equal to true
